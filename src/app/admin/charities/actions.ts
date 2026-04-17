@@ -1,13 +1,14 @@
 'use server'
 
-import { createClient } from "@/lib/supabase/server"
+import { createClient, createAdminClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 
 export async function upsertCharity(formData: FormData) {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const userClient = createClient()
+  const adminClient = createAdminClient()
+  const { data: { user } } = await userClient.auth.getUser()
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user?.id).single()
+  const { data: profile } = await userClient.from('profiles').select('role').eq('id', user?.id).single()
   if (profile?.role !== 'admin') throw new Error("Unauthorized")
 
   const id = formData.get('id') as string
@@ -17,10 +18,10 @@ export async function upsertCharity(formData: FormData) {
   const charityData = { name, description }
 
   if (id) {
-    const { error } = await supabase.from('charities').update(charityData).eq('id', id)
+    const { error } = await adminClient.from('charities').update(charityData).eq('id', id)
     if (error) throw new Error(error.message)
   } else {
-    const { error } = await supabase.from('charities').insert([charityData])
+    const { error } = await adminClient.from('charities').insert([charityData])
     if (error) throw new Error(error.message)
   }
 
@@ -29,13 +30,14 @@ export async function upsertCharity(formData: FormData) {
 }
 
 export async function deleteCharity(id: string) {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const userClient = createClient()
+  const adminClient = createAdminClient()
+  const { data: { user } } = await userClient.auth.getUser()
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user?.id).single()
+  const { data: profile } = await userClient.from('profiles').select('role').eq('id', user?.id).single()
   if (profile?.role !== 'admin') throw new Error("Unauthorized")
 
-  const { error } = await supabase.from('charities').delete().eq('id', id)
+  const { error } = await adminClient.from('charities').delete().eq('id', id)
   if (error) throw new Error(error.message)
 
   revalidatePath('/admin/charities')

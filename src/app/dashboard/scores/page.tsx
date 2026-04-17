@@ -150,9 +150,9 @@ export default async function ScoresPage() {
                     </div>
                     
                     <form action={async () => {
-                      'use server'
-                      // Note: This needs closure or server action in separate file if using client-side 
-                      // but here it is in a server component with a simplified approach
+                      'use server';
+                      const { deleteScore: del } = await import('./actions');
+                      await del(score.id);
                     }}>
                       <Button 
                         variant="ghost" 
@@ -174,12 +174,11 @@ export default async function ScoresPage() {
                   <p className="text-xl font-bold">No High Scores Found</p>
                   <p className="text-muted-foreground">Log your results to participate in the exclusive monthly draws.</p>
                 </div>
-                <Button variant="outline" className="mt-4 pointer-events-none opacity-50">Log First Round</Button>
               </div>
             )}
             
             {scores && scores.length > 0 && scores.length < 5 && (
-                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-4 animate-pulse">
+                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
                       <AlertCircle className="w-5 h-5 text-amber-500" />
                     </div>

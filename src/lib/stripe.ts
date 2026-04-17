@@ -1,9 +1,12 @@
 import Stripe from "stripe";
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-06-20",
-  appInfo: {
-    name: "GiveBack SaaS",
-    version: "0.1.0",
-  },
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+
+if (!stripeSecretKey) {
+  throw new Error("Missing STRIPE_SECRET_KEY in environment variables");
+}
+
+export const stripe = new Stripe(stripeSecretKey, {
+  apiVersion: "2024-06-20", // Matches the installed package signature
+  typescript: true,
 });

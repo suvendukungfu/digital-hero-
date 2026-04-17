@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
+import { scoreSchema } from "@/lib/validations"
 
 export async function addScore(formData: FormData) {
   const supabase = createClient()
@@ -9,12 +10,16 @@ export async function addScore(formData: FormData) {
 
   if (!user) throw new Error("Unauthorized")
 
-  const score = parseInt(formData.get('score') as string)
-  const score_date = formData.get('score_date') as string
+  const rawScore = parseInt(formData.get('score') as string)
+  const rawDate = formData.get('score_date') as string
 
-  if (isNaN(score) || score < 1 || score > 45) {
-      throw new Error("Score must be between 1 and 45")
+  // Validate with Zod
+  const result = scoreSchema.safeParse({ score: rawScore, score_date: rawDate })
+  if (!result.success) {
+    throw new Error(result.error.errors[0].message)
   }
+
+  const { score, score_date } = result.data
 
   const { error: insertError } = await supabase
     .from('golf_scores')
@@ -31,6 +36,7 @@ export async function addScore(formData: FormData) {
       throw new Error(insertError.message)
   }
 
+  // Keep only latest 5 scores
   const { data: scores } = await supabase
     .from('golf_scores')
     .select('id')
@@ -55,11 +61,13 @@ export async function deleteScore(id: string) {
     
     if (!user) throw new Error("Unauthorized")
 
-    await supabase
+    const { error } = await supabase
         .from('golf_scores')
         .delete()
         .eq('id', id)
         .eq('user_id', user.id)
+
+    if (error) throw new Error(error.message)
 
     revalidatePath('/dashboard/scores')
 }

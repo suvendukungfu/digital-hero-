@@ -5,11 +5,12 @@ import {
   Heart, 
   Settings, 
   LogOut,
-  CircleUser,
-  ShieldCheck
+  ShieldCheck,
+  Ticket
 } from "lucide-react";
 import { signout } from "@/app/auth/action";
 import { createClient } from "@/lib/supabase/server";
+import { SubscribeButton } from "@/components/SubscribeButton";
 
 export default async function DashboardLayout({
   children,
@@ -20,13 +21,16 @@ export default async function DashboardLayout({
   const { data: { user } } = await supabase.auth.getUser();
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, full_name")
+    .select("role, full_name, subscription_status")
     .eq("id", user?.id)
     .single();
+
+  const isSubscribed = profile?.subscription_status === 'active';
 
   const navItems = [
     { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
     { label: "My Scores", href: "/dashboard/scores", icon: Trophy },
+    { label: "Draws", href: "/dashboard/draws", icon: Ticket },
     { label: "Charity", href: "/dashboard/charity", icon: Heart },
     { label: "Settings", href: "/dashboard/settings", icon: Settings },
   ];
@@ -67,6 +71,14 @@ export default async function DashboardLayout({
         </nav>
 
         <div className="p-6 mt-auto">
+          {!isSubscribed && (
+            <div className="mb-4 p-4 rounded-2xl bg-primary/10 border border-primary/20 space-y-3">
+              <p className="text-[10px] font-black uppercase tracking-widest text-primary">Elite Access</p>
+              <p className="text-xs font-bold leading-tight">Unlock full console analytics and draws.</p>
+              <SubscribeButton plan="monthly" variant="primary" size="sm" className="w-full text-[10px]" />
+            </div>
+          )}
+          
           <form action={signout}>
             <button className="flex w-full items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 hover:bg-destructive/10 text-sm font-bold text-muted-foreground hover:text-destructive">
               <LogOut className="w-5 h-5" />
@@ -76,10 +88,31 @@ export default async function DashboardLayout({
         </div>
       </aside>
 
-      <main className="flex-1 overflow-y-auto relative z-10 glass-bg">
-        <div className="h-full">
-            {children}
-        </div>
+      <main className="flex-1 overflow-y-auto relative z-10">
+        {!isSubscribed ? (
+            <div className="h-full min-h-screen flex items-center justify-center p-12 bg-black/40 backdrop-blur-2xl">
+              <div className="max-w-md w-full glass p-10 rounded-[40px] border-white/10 text-center space-y-8 shadow-2xl">
+                <div className="w-20 h-20 rounded-3xl bg-primary/20 flex items-center justify-center mx-auto border border-primary/30 shadow-2xl shadow-primary/20">
+                  <ShieldCheck className="w-10 h-10 text-primary" />
+                </div>
+                <div className="space-y-2">
+                  <h1 className="text-3xl font-black tracking-tighter text-white">Restricted Access</h1>
+                  <p className="text-muted-foreground font-medium text-sm">
+                    The premium Hero Console requires an active subscription to track accuracy and support global causes.
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <SubscribeButton plan="monthly" variant="secondary" />
+                    <SubscribeButton plan="yearly" variant="primary" />
+                </div>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">Secure Checkout via Stripe</p>
+              </div>
+            </div>
+        ) : (
+            <div className="h-full">
+                {children}
+            </div>
+        )}
       </main>
     </div>
   );
