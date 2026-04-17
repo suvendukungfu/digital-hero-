@@ -9,3 +9,5 @@ To fix the errors and run the website, please follow these steps in your native 
 3. Run 'npm run dev'
 
 Once 'npm install' completes, the IDE errors will disappear automatically as the type definitions are loaded.
+## Development Readiness
+- The codebase is fully scaffolded and ready for local development once permissions are resolved.
