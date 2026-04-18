@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/Toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://giveback.vercel.app'),
   title: "GiveBack — Track, Win, Give",
   description: "The ultimate subscription platform combining score tracking, monthly draw rewards, and global charity contributions.",
   keywords: ["SaaS", "charity", "golf", "subscription", "draw", "rewards"],
