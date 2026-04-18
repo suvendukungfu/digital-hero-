@@ -8,6 +8,9 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS stripe_customer_id TEXT;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS subscription_plan TEXT DEFAULT 'none';
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
 
+-- Add unique constraint on subscriptions.user_id for upsert operations
+ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_user_id_unique UNIQUE (user_id);
+
 -- ============================================================
 -- 2. Extend draw_periods table (create if not exists)
 -- ============================================================

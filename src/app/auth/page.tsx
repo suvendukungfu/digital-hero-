@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Reveal, Floating } from "@/components/MotionWrapper";
 
-export default function AuthPage({ searchParams }: { searchParams: { error?: string, message?: string } }) {
+export default function AuthPage({ searchParams }: { searchParams: { error?: string, success?: string, message?: string } }) {
   const [mode, setMode] = useState<"login" | "signup">("login");
 
   return (
@@ -99,8 +99,71 @@ export default function AuthPage({ searchParams }: { searchParams: { error?: str
                 </div>
               )}
 
-              <form className="space-y-6">
-                {mode === "signup" && (
+              {searchParams.success && (
+                <div className="mb-8 p-4 rounded-2xl bg-primary/10 border border-primary/20 text-primary text-xs font-black uppercase tracking-tight flex items-center gap-3">
+                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  {searchParams.message}
+                </div>
+              )}
+
+              {mode === "login" ? (
+                <form action={login} className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black tracking-widest uppercase text-muted-foreground ml-1">Email Address</label>
+                    <Input 
+                      name="email" 
+                      type="email" 
+                      placeholder="hero@giveback.com" 
+                      required 
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center px-1">
+                      <label className="text-[10px] font-black tracking-widest uppercase text-muted-foreground">Security Key</label>
+                      <Link href="#" className="text-[10px] font-black text-primary hover:underline uppercase">Forgot?</Link>
+                    </div>
+                    <Input 
+                      name="password" 
+                      type="password" 
+                      placeholder="••••••••" 
+                      required 
+                    />
+                  </div>
+
+                  <div className="pt-6 space-y-4">
+                    <Button 
+                      type="submit"
+                      variant="primary" 
+                      size="lg" 
+                      className="w-full group"
+                    >
+                      Initialize Logic
+                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1.5 transition-transform" />
+                    </Button>
+                    
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t border-white/10" />
+                      </div>
+                      <div className="relative flex justify-center text-[10px] uppercase">
+                        <span className="bg-[#0a0a0a] px-3 text-muted-foreground font-black tracking-widest">Or</span>
+                      </div>
+                    </div>
+
+                    <Button 
+                      type="button"
+                      variant="secondary" 
+                      size="lg" 
+                      className="w-full"
+                      onClick={() => setMode("signup")}
+                    >
+                      Request New Profile
+                    </Button>
+                  </div>
+                </form>
+              ) : (
+                <form action={signup} className="space-y-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black tracking-widest uppercase text-muted-foreground ml-1">Full Name</label>
                     <Input 
@@ -109,64 +172,61 @@ export default function AuthPage({ searchParams }: { searchParams: { error?: str
                       required 
                     />
                   </div>
-                )}
-                
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black tracking-widest uppercase text-muted-foreground ml-1">Email Address</label>
-                  <Input 
-                    name="email" 
-                    type="email" 
-                    placeholder="hero@giveback.com" 
-                    required 
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center px-1">
-                    <label className="text-[10px] font-black tracking-widest uppercase text-muted-foreground">Security Key</label>
-                    {mode === "login" && (
-                      <Link href="#" className="text-[10px] font-black text-primary hover:underline uppercase">Forgot?</Link>
-                    )}
-                  </div>
-                  <Input 
-                    name="password" 
-                    type="password" 
-                    placeholder="••••••••" 
-                    required 
-                  />
-                </div>
-
-                <div className="pt-6 space-y-4">
-                  <Button 
-                    variant="primary" 
-                    size="lg" 
-                    className="w-full group"
-                    formAction={mode === "login" ? login : signup}
-                  >
-                    {mode === "login" ? "Initialize Logic" : "Create Hero Profile"}
-                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1.5 transition-transform" />
-                  </Button>
                   
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t border-white/10" />
-                    </div>
-                    <div className="relative flex justify-center text-[10px] uppercase">
-                      <span className="bg-[#0a0a0a] px-3 text-muted-foreground font-black tracking-widest">Or</span>
-                    </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black tracking-widest uppercase text-muted-foreground ml-1">Email Address</label>
+                    <Input 
+                      name="email" 
+                      type="email" 
+                      placeholder="hero@giveback.com" 
+                      required 
+                    />
                   </div>
 
-                  <Button 
-                    type="button"
-                    variant="secondary" 
-                    size="lg" 
-                    className="w-full"
-                    onClick={() => setMode(mode === "login" ? "signup" : "login")}
-                  >
-                    {mode === "login" ? "Request New Profile" : "Sign In Existing"}
-                  </Button>
-                </div>
-              </form>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center px-1">
+                      <label className="text-[10px] font-black tracking-widest uppercase text-muted-foreground">Security Key</label>
+                    </div>
+                    <Input 
+                      name="password" 
+                      type="password" 
+                      placeholder="••••••••" 
+                      required 
+                    />
+                  </div>
+
+                  <div className="pt-6 space-y-4">
+                    <Button 
+                      type="submit"
+                      variant="primary" 
+                      size="lg" 
+                      className="w-full group"
+                    >
+                      Create Hero Profile
+                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1.5 transition-transform" />
+                    </Button>
+                    
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t border-white/10" />
+                      </div>
+                      <div className="relative flex justify-center text-[10px] uppercase">
+                        <span className="bg-[#0a0a0a] px-3 text-muted-foreground font-black tracking-widest">Or</span>
+                      </div>
+                    </div>
+
+                    <Button 
+                      type="button"
+                      variant="secondary" 
+                      size="lg" 
+                      className="w-full"
+                      onClick={() => setMode("login")}
+                    >
+                      Sign In Existing
+                    </Button>
+                  </div>
+                </form>
+              )}
             </CardContent>
           </Card>
         </Reveal>

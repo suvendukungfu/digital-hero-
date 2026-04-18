@@ -7,6 +7,6 @@ if (!stripeSecretKey) {
 }
 
 export const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: "2024-06-20", // Matches the installed package signature
+  apiVersion: "2024-06-20",
   typescript: true,
 });

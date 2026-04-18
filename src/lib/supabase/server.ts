@@ -40,16 +40,16 @@ export const createClient = () => {
         },
         set(name: string, value: string, options: CookieOptions) {
           try {
-            cookieStore.set({ name, value, ...options })
+            cookieStore.set(name, value, options)
           } catch (error) {
-            // Handle edge case where cookie is set in server component
+            console.error('Supabase cookie set error (expected in Server Components, unexpected in Actions):', error)
           }
         },
         remove(name: string, options: CookieOptions) {
           try {
-            cookieStore.set({ name, value: '', ...options })
+            cookieStore.set(name, '', { ...options, maxAge: 0 })
           } catch (error) {
-            // Handle edge case
+            console.error('Supabase cookie remove error:', error)
           }
         },
       },

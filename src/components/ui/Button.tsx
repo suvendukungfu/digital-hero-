@@ -8,13 +8,13 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-primary text-primary-foreground shadow-lg shadow-white/5 hover:opacity-90",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-muted font-medium border border-white/5",
-        glass: "bg-white/5 backdrop-blur-md border border-white/10 text-white hover:bg-white/10",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        primary: "bg-primary text-primary-foreground shadow-[inset_0px_1px_rgba(255,255,255,0.4),0_2px_10px_-4px_rgba(255,255,255,0.2)] hover:opacity-90 hover:shadow-[inset_0px_1px_rgba(255,255,255,0.4),0_4px_16px_-4px_rgba(255,255,255,0.3)]",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-white/10 font-medium border border-white/10 shadow-sm",
+        glass: "bg-white/5 backdrop-blur-md border border-white/10 text-white hover:bg-white/10 shadow-[inset_0px_1px_rgba(255,255,255,0.1)]",
+        outline: "border border-white/10 bg-transparent hover:bg-white/5 hover:text-white",
+        ghost: "hover:bg-white/5 hover:text-white",
         link: "text-primary underline-offset-4 hover:underline",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-[inset_0px_1px_rgba(255,255,255,0.2)]",
       },
       size: {
         default: "h-11 px-6 py-2",

@@ -1,12 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
 import { 
   Trophy, Target, Heart, TrendingUp, Clock, ArrowRight, 
-  Activity, Calendar, Sparkles, Ticket, Award, CreditCard
+  Activity, Calendar, Sparkles, Ticket, Award, CreditCard, ShieldCheck, Lock
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { SubscribeButton } from "@/components/SubscribeButton";
 
 export default async function DashboardPage() {
   const supabase = createClient();
@@ -64,6 +65,34 @@ export default async function DashboardPage() {
           {profile?.subscription_plan === 'yearly' ? 'Annual Elite' : 'Monthly Elite'}
         </Badge>
       </div>
+
+      {/* ─── Subscription Required Banner ───────────────────────────── */}
+      {profile?.subscription_status !== 'active' && profile?.role !== 'admin' && (
+        <div className="p-8 rounded-[32px] glass border-amber-500/20 bg-amber-500/5 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
+          <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-8">
+            <div className="flex items-start gap-5 flex-1">
+              <div className="w-16 h-16 rounded-2xl bg-amber-500/20 flex items-center justify-center border border-amber-500/30 shrink-0 shadow-xl shadow-amber-500/10">
+                <ShieldCheck className="w-8 h-8 text-amber-500" />
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-black text-white tracking-tight">Unlock the Full Hero Console</h2>
+                  <Lock className="w-4 h-4 text-amber-500/60" />
+                </div>
+                <p className="text-sm text-muted-foreground font-medium leading-relaxed max-w-lg">
+                  Subscribe to access score tracking, monthly prize draws, charity matching, and real-time analytics. 
+                  Your journey of impact starts with one click.
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3 shrink-0">
+              <SubscribeButton plan="monthly" variant="secondary" size="default" />
+              <SubscribeButton plan="yearly" variant="primary" size="default" />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

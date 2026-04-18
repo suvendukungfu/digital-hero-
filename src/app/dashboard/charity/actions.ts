@@ -1,13 +1,10 @@
 'use server'
 
-import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
+import { requireActiveSubscription } from "@/lib/guards"
 
 export async function selectCharity(charityId: string, percentage: number) {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) throw new Error("Unauthorized")
+  const { user, supabase } = await requireActiveSubscription()
 
   if (percentage < 10 || percentage > 100) {
       throw new Error("Percentage must be between 10% and 100%")
